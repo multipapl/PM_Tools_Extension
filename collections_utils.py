@@ -1,6 +1,9 @@
 import bpy 
 
 def create_collection(name, parent=None, color_tag='DEFAULT', disable_in_render=False):
+    if not isinstance(name, str):  # Перевіряємо, чи name це рядок
+        name = str(name)  # Примусово перетворюємо в рядок
+
     # Створюємо колекцію
     collection = bpy.data.collections.new(name)
     if parent:
@@ -12,10 +15,10 @@ def create_collection(name, parent=None, color_tag='DEFAULT', disable_in_render=
     
     # Налаштовуємо disable_in_render
     if disable_in_render:
-        # Вимкнути рендер для цієї колекції
-        collection.hide_render = True
+        collection.hide_render = True  # Вимкнути рендер для цієї колекції
 
     return collection
+
 
 def create_nested_collections(structure, parent=None):
     for name, value in structure.items():

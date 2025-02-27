@@ -12,35 +12,44 @@ from .random_offset import apply_random_offset
 class PAPL_OT_CreateSet1(bpy.types.Operator):
     bl_idname = "papl.create_set1"
     bl_label = "Create Collection Set 1"
-    
-    main_collection_name: str = bpy.props.StringProperty(
-        name="Main Collection Name",
-        default="ProjectName"
-    )
+
+    # Коректне визначення властивості
+    __annotations__ = {
+        "main_collection_name": bpy.props.StringProperty(
+            name="Main Collection Name",
+            default="ProjectName"
+        )
+    }
 
     def execute(self, context):
+        print(f"Creating collection: {self.main_collection_name}")  # Дебаг-лог
         create_set_1(self.main_collection_name)
         return {'FINISHED'}
 
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
 
+
 # Оператор для створення набору 2
 class PAPL_OT_CreateSet2(bpy.types.Operator):
     bl_idname = "papl.create_set2"
     bl_label = "Create Collection Set 2"
 
-    main_collection_name: str = bpy.props.StringProperty(
-        name="Main Collection Name",
-        default="ProjectName"
-    )
+    __annotations__ = {
+        "main_collection_name": bpy.props.StringProperty(
+            name="Main Collection Name",
+            default="ProjectName"
+        )
+    }
 
     def execute(self, context):
+        print(f"Creating collection: {self.main_collection_name}")  # Дебаг-лог
         create_set_2(self.main_collection_name)
         return {'FINISHED'}
 
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
+
 
 # Оператор для центрування оріджину
 class PAPL_OT_CenterOrigin(bpy.types.Operator):
