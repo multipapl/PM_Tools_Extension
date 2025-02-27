@@ -1,7 +1,7 @@
 import bpy
 
 class PAPL_PT_MainPanel(bpy.types.Panel):
-    bl_label = "PM Tools"
+    bl_label = "PM TOOLS"
     bl_idname = "PAPL_PT_main_panel"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"

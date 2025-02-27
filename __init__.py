@@ -10,10 +10,7 @@ if current_dir not in sys.path:
 
 from . import panel, operators """
 
-""" import bpy
-from . import panel, operators """
-
-import sys
+""" import sys
 import os
 
 # Перевіряємо, чи ми працюємо в середовищі Blender
@@ -28,8 +25,10 @@ if not IN_BLENDER:  # Якщо ми не в Blender (тобто в VS Code)
 try:
     from bl_ext.papl_tools import panel, operators  # Blender Extensions
 except ImportError:
-    from . import panel, operators  # Для тестування в VS Code
+    from . import panel, operators  # Для тестування в VS Code """
 
+import bpy
+from . import panel, operators
 
 def register():
     panel.register()

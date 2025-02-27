@@ -9,6 +9,7 @@ import os
 import json
 import hashlib
 import zipfile
+import toml
 
 # === Налаштування ===
 EXTENSION_NAME = "papl_tools"
@@ -16,7 +17,7 @@ REPO_DIR = r"C:/Blender_Extensions_Repo/packages"  # Де лежить index.jso
 VERSION_FILE = os.path.join(REPO_DIR, "version.txt")  # Файл для збереження версії
 INDEX_FILE = os.path.join(REPO_DIR, "index.json")  # Файл index.json
 EXTENSION_DIR = r"Q:/_LIB/Blender/Papl_Tools"  # Шлях до коду розширення
-INIT_FILE = os.path.join(EXTENSION_DIR, "__init__.py")  # Головний файл аддона
+MANIFEST_FILE = os.path.join(EXTENSION_DIR, "blender_manifest.toml")  # Файл blender_manifest.toml
 
 # === Отримання поточної версії ===
 def get_current_version():
@@ -38,22 +39,33 @@ new_version = increment_version(current_version)
 with open(VERSION_FILE, "w") as f:
     f.write(new_version)
 
-# === Оновлення версії у __init__.py (щоб ZIP містив актуальну версію) ===
-if os.path.exists(INIT_FILE):
-    with open(INIT_FILE, "r", encoding="utf-8") as f:
-        lines = f.readlines()
-    
-    with open(INIT_FILE, "w", encoding="utf-8") as f:
-        for line in lines:
-            if line.startswith("bl_info"):
-                f.write(f'bl_info = {{"version": "{new_version}"}}\n')
-            else:
-                f.write(line)
+# === Форматована змінна для версії ===
+manifest_version = new_version  # Просто зберігаємо нову версію як рядок
 
-# === Створення ZIP-архіву ===
+# === Оновлення значень у blender_manifest.toml ===
+if os.path.exists(MANIFEST_FILE):
+    # Завантажуємо поточний файл
+    with open(MANIFEST_FILE, "r", encoding="utf-8") as f:
+        manifest_data = toml.load(f)
+
+    # Оновлюємо значення версій
+    manifest_data["schema_version"] = manifest_version
+    manifest_data["version"] = manifest_version
+
+    # Записуємо назад у файл
+    with open(MANIFEST_FILE, "w", encoding="utf-8") as f:
+        toml.dump(manifest_data, f)
+
+    print(f"📝 Оновлено blender_manifest.toml для версії {new_version}")
+
+# === Видалення старого архіву ===
 zip_filename = f"{EXTENSION_NAME}-{new_version}.zip"
 zip_path = os.path.join(REPO_DIR, zip_filename)
 
+if os.path.exists(zip_path):
+    os.remove(zip_path)
+
+# === Створення нового ZIP-архіву ===
 with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
     for root, _, files in os.walk(EXTENSION_DIR):
         for file in files:
@@ -79,7 +91,7 @@ if os.path.exists(INDEX_FILE):
     
     # Оновлюємо необхідні поля
     index_data["data"][0]["version"] = new_version
-    index_data["data"][0]["schema_version"] = new_version  # Оновлення schema_version
+    index_data["data"][0]["schema_version"] = new_version
     index_data["data"][0]["archive_url"] = f"./{zip_filename}"
     index_data["data"][0]["archive_size"] = archive_size
     index_data["data"][0]["archive_hash"] = archive_hash
@@ -92,4 +104,6 @@ if os.path.exists(INDEX_FILE):
 
 print(f"📦 Архів збережено: {zip_path}")
 print(f"📜 Index.json оновлено: {INDEX_FILE}")
+print(f"📝 blender_manifest.toml оновлено для версії {new_version}")
+print("🔄 Тепер онови репозиторій у Blender.")
 
