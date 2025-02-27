@@ -40,9 +40,12 @@ def create_tree_animation():
     if displace_name not in obj.modifiers:
         displace = obj.modifiers.new(displace_name, 'DISPLACE')
 
-        # Створюємо текстуру та змінюємо тільки режим шуму
-        texture = bpy.data.textures.new("Wind_Texture", 'CLOUDS')
-        texture.noise_basis = 'IMPROVED_PERLIN'  # Використовуємо Improved Perlin
+        # Перевіряємо, чи існує текстура "Wind_Texture"
+        texture = bpy.data.textures.get("Wind_Texture")
+    
+        if not texture:  # Якщо такої текстури немає, створюємо нову
+            texture = bpy.data.textures.new("Wind_Texture", 'CLOUDS')
+            texture.noise_basis = 'IMPROVED_PERLIN'  # Використовуємо Improved Perlin
 
         displace.texture = texture
         displace.strength = 0.15  # Збільшена сила Displace
@@ -50,6 +53,7 @@ def create_tree_animation():
         displace.vertex_group = "VG_Leaves"
         displace.texture_coords = 'OBJECT'
         displace.texture_coords_object = empty_wind
+
 
     # =============== 4. Додаємо Simple Deform (Bend) для гнучкості дерева (по Y) ===============
     if bend_y_name not in obj.modifiers:
