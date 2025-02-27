@@ -1,9 +1,9 @@
 import bpy
 import bmesh
-from mathutils import Vector
+from mathutils import Vector #papl
 
 def create_lights_from_faces(obj, is_portal, visible_to_camera):
-    """
+    """ 
     Створює Area Lights у центрі вибраних полігонів.
     
     :param obj: Активний об'єкт (меш)

@@ -1,4 +1,4 @@
-import bpy # type: ignore
+import bpy 
 
 def create_collection(name, parent=None, color_tag='DEFAULT', disable_in_render=False):
     # Створюємо колекцію

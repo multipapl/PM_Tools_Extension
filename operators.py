@@ -66,7 +66,7 @@ class PAPL_OT_CenterBottomOrigin(bpy.types.Operator):
     bl_label = "Center + Bottom Origin"
     
     def execute(self, context):
-        center_bottom_origin()  # Викликаємо функцію для зміщення оріджину на дно
+        center_bottom_origin()  
         return {'FINISHED'}
         
 # Оператор для конвертування мешів на інстанс колекції
@@ -75,7 +75,7 @@ class PAPL_OT_MeshToCollectionInstance(bpy.types.Operator):
     bl_label = "Meshes to Collection Instances"
     
     def execute(self, context):
-        replace_meshes_with_instance()  # Викликаємо функцію для зміщення оріджину на дно
+        replace_meshes_with_instance()  
         return {'FINISHED'}
         
 class OT_CreateLightsFromFaces(bpy.types.Operator):

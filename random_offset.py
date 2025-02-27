@@ -8,7 +8,6 @@ def apply_random_offset():
     min_offset = -500.0  # Мінімальний офсет кадру
     max_offset = 500.0   # Максимальний офсет кадру
 
-    # Отримуємо всі виділені об'єкти
     selected_objects = bpy.context.selected_objects
 
     if not selected_objects:

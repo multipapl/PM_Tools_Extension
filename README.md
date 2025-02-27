@@ -1,6 +1,6 @@
 # PaplTools – Custom Blender Add-on
 
-**PaplTools** is a custom Blender add-on designed as a personal toolset to streamline and optimize workflows according to my specific needs.
+**PaplTools** is a custom Blender extension designed as a personal toolset to streamline and optimize workflows according to my specific needs.
 
 ## 🔹 Features:
 - Custom tool panel for quick access to frequently used functions

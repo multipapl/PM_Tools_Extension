@@ -2,7 +2,7 @@ import bpy
 
 def adjust_custom_distance():
 
-    # Зберігаємо поточний рендер-движок
+    # Зберігаємо поточний рендер
     current_engine = bpy.context.scene.render.engine
 
     # Визначаємо назву Eevee (у різних версіях Blender вона може бути різною)

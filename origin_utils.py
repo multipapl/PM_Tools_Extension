@@ -2,9 +2,7 @@ import bpy
 from mathutils import Vector, Matrix
 
 def center_origin():
-    """Центрує оріджин обєкта в центрі маси"""
     bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_MASS', center='BOUNDS')
-
 
 def center_bottom_origin():
     """

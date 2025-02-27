@@ -1,10 +1,3 @@
-""" # 🔹 Налаштування шляхів
-EXTENSION_NAME = "papl_tools"  # Назва розширення
-VERSION_FILE = "version.txt"   # Файл для збереження останньої версії
-REPO_DIR = Path("C:/Blender_Extensions_Repo/packages")  # Шлях до папки репозиторію
-EXTENSION_DIR = Path("Q:/_LIB/Blender/Papl_Tools")  # ЗАМІНИ на свій шлях
-INDEX_FILE = REPO_DIR / "index.json"  # Файл index.json """
-
 import os
 import json
 import hashlib

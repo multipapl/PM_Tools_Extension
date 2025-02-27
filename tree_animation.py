@@ -98,5 +98,3 @@ def create_tree_animation():
         noise_bend_x = fcurve_bend_x.modifiers.new(type='NOISE')
         noise_bend_x.scale = 80
         noise_bend_x.strength = 0.12
-
-    print(f"✅ Анімація листя та згину дерева створена для {obj.name}!")

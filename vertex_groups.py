@@ -115,5 +115,3 @@ def create_tree_vertex_groups():
 
         for v_index, weight in global_vertices:
             vg_global.add([v_index], weight, 'REPLACE')
-
-    print("✅ Покращені градієнти для листя та глобального згину створені!")

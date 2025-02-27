@@ -14,7 +14,6 @@ def replace_meshes_with_instance():
     selected_objects = [obj for obj in bpy.context.selected_objects if obj != active_obj]
 
     for obj in selected_objects:
-        # Перевіряємо, чи об'єкт є мешем
         if obj.type == 'MESH':
             # Зберігаємо позицію, обертання та масштаб меша
             location = obj.location
