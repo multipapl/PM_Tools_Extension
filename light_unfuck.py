@@ -1,4 +1,4 @@
-import bpy # type: ignore
+import bpy 
 
 def adjust_custom_distance():
 
