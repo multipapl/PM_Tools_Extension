@@ -1,0 +1,12 @@
+{
+  "repositories": [
+    {
+      "name": "PM_Tools",
+      "description": "Набір інструментів для Blender.",
+      "author": "multipapl",
+      "version": "1.0.0",
+      "blender": [4, 3, 0],
+      "location": "Q:/_LIB/Blender/.Papl_Tools"
+    }
+  ]
+}
