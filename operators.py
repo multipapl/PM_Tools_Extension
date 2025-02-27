@@ -8,15 +8,6 @@ from .vertex_groups import create_tree_vertex_groups
 from .tree_animation import create_tree_animation
 from .random_offset import apply_random_offset
 
-""" from papl_tools.collections_utils import create_set_1, create_set_2
-from papl_tools.origin_utils import center_origin, center_bottom_origin  
-from papl_tools.optimization import replace_meshes_with_instance
-from papl_tools.light_utils import create_lights_from_faces
-from papl_tools.light_unfuck import adjust_custom_distance
-from papl_tools.vertex_groups import create_tree_vertex_groups
-from papl_tools.tree_animation import create_tree_animation
-from papl_tools.random_offset import apply_random_offset """
-
 # Оператор для створення набору 1
 class PAPL_OT_CreateSet1(bpy.types.Operator):
     bl_idname = "papl.create_set1"
