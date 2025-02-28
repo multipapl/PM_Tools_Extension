@@ -21,6 +21,10 @@ def mark_unused_collections(library_scene_name="Library", marker="[UNUSED] "):
     cleaned_count = 0
 
     for collection in library_collections:
+        # Якщо назва починається з "GS", ми її не чіпаємо
+        if collection.name.startswith("GS"):
+            continue
+
         if collection not in instantiated_collections:
             if not collection.name.startswith(marker):
                 collection.name = marker + collection.name
