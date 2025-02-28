@@ -8,7 +8,7 @@ from .vertex_groups import create_tree_vertex_groups
 from .tree_animation import create_tree_animation
 from .random_offset import apply_random_offset
 from .toggle_modifiers import toggle_modifiers_by_name
-from .toggle_unused_collections import mark_unused_collections
+from .toggle_unused_collections import mark_unused_collections, delete_unused_collections
 
 # Оператор для створення набору 1
 class PAPL_OT_CreateSet1(bpy.types.Operator):
@@ -191,6 +191,27 @@ class PAPL_OT_MarkUnusedCollections(bpy.types.Operator):
             self.report({'INFO'}, f"🔄 Відновлено {cleaned} колекцій!")
 
         return {'FINISHED'}
+    
+class PAPL_OT_DeleteUnusedCollections(bpy.types.Operator):
+    """Видаляє всі позначені як `[UNUSED]` колекції у сцені 'Library'"""
+    bl_idname = "papl.delete_unused_collections"
+    bl_label = "Delete Unused Collections"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        error, deleted_count = delete_unused_collections()
+        
+        if error:
+            self.report({'ERROR'}, error)
+        elif deleted_count > 0:
+            self.report({'INFO'}, f"🗑 Видалено {deleted_count} невикористаних колекцій!")
+        else:
+            self.report({'INFO'}, "✅ Немає невикористаних колекцій для видалення.")
+
+        return {'FINISHED'}
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_confirm(self, event)
 
         
 def register():
@@ -206,6 +227,7 @@ def register():
     bpy.utils.register_class(PAPL_OT_ApplyRandomOffset)
     bpy.utils.register_class(PAPL_OT_ToggleModifiers)
     bpy.utils.register_class(PAPL_OT_MarkUnusedCollections)
+    bpy.utils.register_class(PAPL_OT_DeleteUnusedCollections)
 
 def unregister():
     bpy.utils.unregister_class(PAPL_OT_CreateSet1)
@@ -220,3 +242,4 @@ def unregister():
     bpy.utils.unregister_class(PAPL_OT_ApplyRandomOffset)
     bpy.utils.unregister_class(PAPL_OT_ToggleModifiers)
     bpy.utils.unregister_class(PAPL_OT_MarkUnusedCollections)
+    bpy.utils.unregister_class(PAPL_OT_DeleteUnusedCollections)

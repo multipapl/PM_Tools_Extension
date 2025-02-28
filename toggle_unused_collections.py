@@ -35,3 +35,19 @@ def mark_unused_collections(library_scene_name="Library", marker="[UNUSED] "):
                 cleaned_count += 1
 
     return marked_count, cleaned_count, None
+
+def delete_unused_collections(library_scene_name="Library", marker="[UNUSED] "):
+    """Видаляє всі колекції, які позначені як `[UNUSED]` у сцені 'Library'."""
+    
+    if library_scene_name not in bpy.data.scenes:
+        return "❌ Сцена не знайдена!", 0
+
+    library_scene = bpy.data.scenes[library_scene_name]
+    collections_to_delete = [col for col in library_scene.collection.children if col.name.startswith(marker)]
+
+    deleted_count = 0
+    for collection in collections_to_delete:
+        bpy.data.collections.remove(collection)
+        deleted_count += 1
+
+    return None, deleted_count

@@ -30,6 +30,7 @@ class PAPL_PT_MainPanel(bpy.types.Panel):
         box.operator("papl.adjust_custom_distance")
         box.operator("papl.toggle_modifiers", text="Toggle Modifiers by Name")
         box.operator("papl.mark_unused_collections", text="Mark Unused Collections")
+        box.operator("papl.delete_unused_collections", text="Delete Unused Collections", icon='TRASH')
 
 
         # Створюємо підкатегорію для Lights From Faces
