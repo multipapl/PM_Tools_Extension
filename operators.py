@@ -7,6 +7,7 @@ from .light_unfuck import adjust_custom_distance
 from .vertex_groups import create_tree_vertex_groups
 from .tree_animation import create_tree_animation
 from .random_offset import apply_random_offset
+from .toggle_modifiers import toggle_modifiers_by_name
 
 # Оператор для створення набору 1
 class PAPL_OT_CreateSet1(bpy.types.Operator):
@@ -146,8 +147,21 @@ class PAPL_OT_CreateTreeAnimation(bpy.types.Operator):
     def execute(self, context):
         create_tree_animation()
         return {'FINISHED'}
-        
+    
+class PAPL_OT_ToggleModifiers(bpy.types.Operator):
+    """Перемикає видимість модифікаторів за назвою"""
+    bl_idname = "papl.toggle_modifiers"
+    bl_label = "Toggle Modifiers"
+    bl_options = {'REGISTER', 'UNDO'}
+    modifier_name: bpy.props.StringProperty(name="Modifier Name", default="GeometryNodes")
+    
+    def execute(self, context):
+        toggle_modifiers_by_name(self.modifier_name)
+        return {'FINISHED'}
 
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self)
+        
 def register():
     bpy.utils.register_class(PAPL_OT_CreateSet1)
     bpy.utils.register_class(PAPL_OT_CreateSet2)
@@ -159,6 +173,7 @@ def register():
     bpy.utils.register_class(PAPL_OT_CreateVertexGroups)
     bpy.utils.register_class(PAPL_OT_CreateTreeAnimation)
     bpy.utils.register_class(PAPL_OT_ApplyRandomOffset)
+    bpy.utils.register_class(PAPL_OT_ToggleModifiers)
 
 def unregister():
     bpy.utils.unregister_class(PAPL_OT_CreateSet1)
@@ -171,3 +186,4 @@ def unregister():
     bpy.utils.unregister_class(PAPL_OT_CreateVertexGroups)
     bpy.utils.unregister_class(PAPL_OT_CreateTreeAnimation)
     bpy.utils.unregister_class(PAPL_OT_ApplyRandomOffset)
+    bpy.utils.unregister_class(PAPL_OT_ToggleModifiers)
