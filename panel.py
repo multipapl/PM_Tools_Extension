@@ -1,4 +1,4 @@
-import bpy
+""" import bpy
 #
 class PAPL_PT_MainPanel(bpy.types.Panel):
     bl_label = "PM TOOLS"
@@ -47,6 +47,72 @@ class PAPL_PT_MainPanel(bpy.types.Panel):
         box.operator("papl.create_tree_animation", text="Create Tree Animation")
         box.operator("papl.apply_random_offset", text="Apply Random Offset")
               
+
+def register():
+    bpy.utils.register_class(PAPL_PT_MainPanel)
+
+def unregister():
+    bpy.utils.unregister_class(PAPL_PT_MainPanel)
+ """
+
+import bpy
+
+class PAPL_PT_MainPanel(bpy.types.Panel):
+    """Основна панель PM TOOLS"""
+    bl_label = "PM TOOLS"
+    bl_idname = "PAPL_PT_main_panel"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "Papl Tools"
+    
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+
+        # ========== LAYER MANAGEMENT ==========
+        box = layout.box()
+        box.label(text="Layer Management", icon='OUTLINER')
+        row = box.row()
+        row.operator("papl.create_set1", text="Create Set 1", icon='GROUP')
+        row.operator("papl.create_set2", text="Create Set 2", icon='GROUP')
+
+        # ========== ORIGIN TOOLS ==========
+        box = layout.box()
+        box.label(text="Origin Tools", icon='OBJECT_ORIGIN')
+        row = box.row()
+        row.operator("papl.center_origin", text="Center Origin")
+        row.operator("papl.center_bottom_origin", text="Bottom Origin")
+
+        # ========== OPTIMIZATION ==========
+        box = layout.box()
+        box.label(text="Optimization", icon='MODIFIER')
+        row = box.row()
+        row.operator("papl.mesh_to_collection_instance", text="Mesh to IC")
+        row.operator("papl.adjust_custom_distance", text="DeFuck Lights")
+        box.operator("papl.toggle_modifiers", text="Toggle Modifiers", icon='MODIFIER')
+
+
+        # ========== UNUSED COLLECTIONS ==========
+        box = layout.box()
+        box.label(text="Collection Cleanup", icon='COLLECTION_NEW')
+        row = box.row()
+        row.operator("papl.mark_unused_collections", text="Mark Unused", icon='VIEWZOOM')
+        row.operator("papl.delete_unused_collections", text="Delete Unused", icon='TRASH')
+
+        # ========== LIGHTS FROM FACES ==========
+        box = layout.box()
+        box.label(text="Lights From Faces", icon='LIGHT_SUN')
+        box.prop(scene, "lff_visible_to_camera", text="Visible to Camera")
+        box.prop(scene, "lff_portal_light", text="Create as Portals")
+        box.operator("object.create_lights_from_faces", text="Generate Lights")
+
+        # ========== PROCEDURAL TREE ANIMATION ==========
+        box = layout.box()
+        box.label(text="Tree Animation", icon='FORCE_WIND')
+        row = box.row()
+        row.operator("papl.create_vertex_groups", text="Vertex Groups", icon='GROUP_VERTEX')
+        row.operator("papl.create_tree_animation", text="Tree Animation", icon='ANIM_DATA')
+        box.operator("papl.apply_random_offset", text="Apply Offset", icon='TIME')
 
 def register():
     bpy.utils.register_class(PAPL_PT_MainPanel)
