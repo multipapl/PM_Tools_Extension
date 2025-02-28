@@ -153,8 +153,16 @@ class PAPL_OT_ToggleModifiers(bpy.types.Operator):
     bl_idname = "papl.toggle_modifiers"
     bl_label = "Toggle Modifiers"
     bl_options = {'REGISTER', 'UNDO'}
-    modifier_name: bpy.props.StringProperty(name="Modifier Name", default="GeometryNodes")
     
+    # Виносимо властивість у клас
+    __annotations__ = {
+        "modifier_name": bpy.props.StringProperty(
+            name="Modifier Name",
+            description="Enter the name of the modifier to toggle",
+            default="Proxy"
+        )
+    }
+
     def execute(self, context):
         toggle_modifiers_by_name(self.modifier_name)
         return {'FINISHED'}

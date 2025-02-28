@@ -28,8 +28,9 @@ class PAPL_PT_MainPanel(bpy.types.Panel):
         box.label(text="Optimize")
         box.operator("papl.mesh_to_collection_instance")
         box.operator("papl.adjust_custom_distance")
-        box.operator("papl.toggle_modifiers", text="Toggle Modifiers by Name").modifier_name = "Proxy"
-        
+        box.operator("papl.toggle_modifiers", text="Toggle Modifiers by Name")
+
+
         # Створюємо підкатегорію для Lights From Faces
         box = layout.box()
         box.label(text="Lights From Faces")
