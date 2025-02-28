@@ -8,6 +8,7 @@ from .vertex_groups import create_tree_vertex_groups
 from .tree_animation import create_tree_animation
 from .random_offset import apply_random_offset
 from .toggle_modifiers import toggle_modifiers_by_name
+from .toggle_unused_collections import mark_unused_collections
 
 # Оператор для створення набору 1
 class PAPL_OT_CreateSet1(bpy.types.Operator):
@@ -169,6 +170,28 @@ class PAPL_OT_ToggleModifiers(bpy.types.Operator):
 
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
+    
+class PAPL_OT_MarkUnusedCollections(bpy.types.Operator):
+    """Позначає невикористані колекції у сцені Library"""
+    bl_idname = "papl.mark_unused_collections"
+    bl_label = "Mark Unused Collections"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        marked, cleaned, error = mark_unused_collections()
+        
+        if error:
+            self.report({'ERROR'}, error)
+        elif marked > 0:
+            self.report({'INFO'}, f"⚠ Позначено {marked} невикористаних колекцій!")
+        else:
+            self.report({'INFO'}, "✅ Усі колекції використовуються. Сцена чиста!")
+
+        if cleaned > 0:
+            self.report({'INFO'}, f"🔄 Відновлено {cleaned} колекцій!")
+
+        return {'FINISHED'}
+
         
 def register():
     bpy.utils.register_class(PAPL_OT_CreateSet1)
@@ -182,6 +205,7 @@ def register():
     bpy.utils.register_class(PAPL_OT_CreateTreeAnimation)
     bpy.utils.register_class(PAPL_OT_ApplyRandomOffset)
     bpy.utils.register_class(PAPL_OT_ToggleModifiers)
+    bpy.utils.register_class(PAPL_OT_MarkUnusedCollections)
 
 def unregister():
     bpy.utils.unregister_class(PAPL_OT_CreateSet1)
@@ -195,3 +219,4 @@ def unregister():
     bpy.utils.unregister_class(PAPL_OT_CreateTreeAnimation)
     bpy.utils.unregister_class(PAPL_OT_ApplyRandomOffset)
     bpy.utils.unregister_class(PAPL_OT_ToggleModifiers)
+    bpy.utils.unregister_class(PAPL_OT_MarkUnusedCollections)
