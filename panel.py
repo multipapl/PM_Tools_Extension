@@ -34,7 +34,6 @@ class PAPL_PT_MainPanel(bpy.types.Panel):
         row.operator("papl.adjust_custom_distance", text="DeFuck Lights")
         box.operator("papl.toggle_modifiers", text="Toggle Modifiers", icon='MODIFIER')
 
-
         # ========== UNUSED COLLECTIONS ==========
         box = layout.box()
         box.label(text="Collection Cleanup", icon='COLLECTION_NEW')
@@ -57,8 +56,28 @@ class PAPL_PT_MainPanel(bpy.types.Panel):
         row.operator("papl.create_tree_animation", text="Tree Animation", icon='ANIM_DATA')
         box.operator("papl.apply_random_offset", text="Apply Offset", icon='TIME')
 
+        box = layout.box()
+        box.label(text="Light Temperature Control", icon='LIGHT')
+        # Кнопка для встановлення нодової групи
+        box.operator("papl.setup_light_temperature", text="Setup Light Temperature", icon='NODETREE')
+        # Переконуємося, що змінна існує перед її відображенням
+        if hasattr(context.scene, "papl_light_temperature"):
+            box.prop(context.scene, "papl_light_temperature", text="Temperature (K)")
+        else:
+            box.label(text="⚠️ Property not found!")
+        # Кнопка для оновлення температури
+        box.operator("papl.update_light_temperature", text="Apply Temperature")
+
 def register():
     bpy.utils.register_class(PAPL_PT_MainPanel)
+    bpy.types.Scene.papl_light_temperature = bpy.props.FloatProperty(
+        name="Light Temperature",
+        description="Set temperature for selected lights",
+        default=3500,
+        min=1000,
+        max=10000
+    )
 
 def unregister():
     bpy.utils.unregister_class(PAPL_PT_MainPanel)
+    del bpy.types.Scene.papl_light_temperature

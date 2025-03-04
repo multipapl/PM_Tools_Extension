@@ -9,7 +9,8 @@ from .tree_animation import create_tree_animation
 from .random_offset import apply_random_offset
 from .toggle_modifiers import toggle_modifiers_by_name
 from .toggle_unused_collections import mark_unused_collections, delete_unused_collections
-
+from .toggle_light_temperature import update_light_temperature
+from .toggle_light_temperature import setup_light_temperature_for_selected_lights
 # Оператор для створення набору 1
 class PAPL_OT_CreateSet1(bpy.types.Operator):
     bl_idname = "papl.create_set1"
@@ -212,7 +213,33 @@ class PAPL_OT_DeleteUnusedCollections(bpy.types.Operator):
 
     def invoke(self, context, event):
         return context.window_manager.invoke_confirm(self, event)
+    
+class PAPL_OT_UpdateLightTemperature(bpy.types.Operator):
+    """Updates the temperature in the PAPL_LightTemperature node for selected lights."""
+    bl_idname = "papl.update_light_temperature"
+    bl_label = "Update Light Temperature"
+    bl_options = {'REGISTER', 'UNDO'}
 
+    def execute(self, context):
+        # Отримуємо значення температури з сцени як float
+        new_temperature = context.scene.papl_light_temperature
+
+        if isinstance(new_temperature, (int, float)):
+            update_light_temperature(float(new_temperature))
+            return {'FINISHED'}
+        else:
+            self.report({'ERROR'}, "Invalid temperature value! Must be a number.")
+            return {'CANCELLED'}
+
+class PAPL_OT_SetupLightTemperature(bpy.types.Operator):
+    """Sets up the PAPL_LightTemperature node group for selected lights."""
+    bl_idname = "papl.setup_light_temperature"
+    bl_label = "Setup Light Temperature"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        setup_light_temperature_for_selected_lights()
+        return {'FINISHED'}
         
 def register():
     bpy.utils.register_class(PAPL_OT_CreateSet1)
@@ -228,6 +255,8 @@ def register():
     bpy.utils.register_class(PAPL_OT_ToggleModifiers)
     bpy.utils.register_class(PAPL_OT_MarkUnusedCollections)
     bpy.utils.register_class(PAPL_OT_DeleteUnusedCollections)
+    bpy.utils.register_class(PAPL_OT_UpdateLightTemperature)
+    bpy.utils.register_class(PAPL_OT_SetupLightTemperature)
 
 def unregister():
     bpy.utils.unregister_class(PAPL_OT_CreateSet1)
@@ -243,3 +272,5 @@ def unregister():
     bpy.utils.unregister_class(PAPL_OT_ToggleModifiers)
     bpy.utils.unregister_class(PAPL_OT_MarkUnusedCollections)
     bpy.utils.unregister_class(PAPL_OT_DeleteUnusedCollections)
+    bpy.utils.unregister_class(PAPL_OT_UpdateLightTemperature)
+    bpy.utils.unregister_class(PAPL_OT_SetupLightTemperature)
