@@ -68,6 +68,11 @@ class PAPL_PT_MainPanel(bpy.types.Panel):
         # Кнопка для оновлення температури
         box.operator("papl.update_light_temperature", text="Apply Temperature")
 
+
+        box = layout.box()
+        box.label(text="Material Tools", icon='MATERIAL')
+        box.operator("papl.cleanup_material_duplicates", text="Fix Material Duplicates", icon='FILE_REFRESH')
+
 def register():
     bpy.utils.register_class(PAPL_PT_MainPanel)
     bpy.types.Scene.papl_light_temperature = bpy.props.FloatProperty(
