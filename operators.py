@@ -11,6 +11,8 @@ from .toggle_modifiers import toggle_modifiers_by_name
 from .toggle_unused_collections import mark_unused_collections, delete_unused_collections
 from .toggle_light_temperature import update_light_temperature
 from .toggle_light_temperature import setup_light_temperature_for_selected_lights
+from .materials_tools import cleanup_duplicates_in_selected_objects
+
 # Оператор для створення набору 1
 class PAPL_OT_CreateSet1(bpy.types.Operator):
     bl_idname = "papl.create_set1"
@@ -236,10 +238,30 @@ class PAPL_OT_SetupLightTemperature(bpy.types.Operator):
     bl_idname = "papl.setup_light_temperature"
     bl_label = "Setup Light Temperature"
     bl_options = {'REGISTER', 'UNDO'}
+    def execute(self, context):
+        try:
+            setup_light_temperature_for_selected_lights()
+            return {'FINISHED'}
+        except Exception as e:
+            self.report({'ERROR'}, f"Failed to setup light temperature: {e}")
+            return {'CANCELLED'}
+        return {'FINISHED'}
+    
+class PAPL_OT_CleanupMaterialDuplicates(bpy.types.Operator):
+    bl_idname = "papl.cleanup_material_duplicates"
+    bl_label = "Очистити дублікати матеріалів"
+    bl_description = "Замінює дублікати матеріалів у вибраних обʼєктах на оригінальні"
+    bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        setup_light_temperature_for_selected_lights()
+        count = cleanup_duplicates_in_selected_objects()
+        if count == 0:
+            self.report({'INFO'}, "Нічого не знайдено для заміни.")
+            return {'CANCELLED'}
+        self.report({'INFO'}, f"✅ Заміна завершена: {count} матеріал(ів) оновлено.")
         return {'FINISHED'}
+
+
         
 def register():
     bpy.utils.register_class(PAPL_OT_CreateSet1)
@@ -257,6 +279,7 @@ def register():
     bpy.utils.register_class(PAPL_OT_DeleteUnusedCollections)
     bpy.utils.register_class(PAPL_OT_UpdateLightTemperature)
     bpy.utils.register_class(PAPL_OT_SetupLightTemperature)
+    bpy.utils.register_class(PAPL_OT_CleanupMaterialDuplicates)
 
 def unregister():
     bpy.utils.unregister_class(PAPL_OT_CreateSet1)
@@ -274,3 +297,4 @@ def unregister():
     bpy.utils.unregister_class(PAPL_OT_DeleteUnusedCollections)
     bpy.utils.unregister_class(PAPL_OT_UpdateLightTemperature)
     bpy.utils.unregister_class(PAPL_OT_SetupLightTemperature)
+    bpy.utils.unregister_class(PAPL_OT_CleanupMaterialDuplicates)
