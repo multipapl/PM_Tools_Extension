@@ -1,6 +1,6 @@
-schema_version = "1.1.42"
+schema_version = "1.1.54"
 id = "papl_tools"
-version = "1.1.42"
+version = "1.1.54"
 name = "Papl Tools"
 tagline = "Multipapl Toolkit"
 maintainer = "Paplmulti"

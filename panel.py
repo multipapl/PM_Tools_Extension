@@ -68,10 +68,12 @@ class PAPL_PT_MainPanel(bpy.types.Panel):
         # Кнопка для оновлення температури
         box.operator("papl.update_light_temperature", text="Apply Temperature")
 
-
+        # ========== Arrange Tools ==========
         box = layout.box()
-        box.label(text="Material Tools", icon='MATERIAL')
-        box.operator("papl.cleanup_material_duplicates", text="Fix Material Duplicates", icon='FILE_REFRESH')
+        box.label(text="Arrange Tools", icon='SORTSIZE')
+        box.prop(scene, "pm_sort_method", text="")
+        box.operator("papl.arrange_assets", text="Arrange Selected")
+
 
 def register():
     bpy.utils.register_class(PAPL_PT_MainPanel)
@@ -82,7 +84,17 @@ def register():
         min=1000,
         max=10000
     )
+    bpy.types.Scene.pm_sort_method = bpy.props.EnumProperty(
+        name="Sort By",
+        description="Метод сортування об'єктів перед розстановкою",
+        items=[
+            ('POLYCOUNT', "By Polycount", "Сортувати за кількістю полігонів"),
+            ('SIZE', "By Size", "Сортувати за об'ємом (по габаритах)"),
+        ],
+        default='POLYCOUNT'
+    )
 
 def unregister():
     bpy.utils.unregister_class(PAPL_PT_MainPanel)
     del bpy.types.Scene.papl_light_temperature
+    del bpy.types.Scene.pm_sort_method

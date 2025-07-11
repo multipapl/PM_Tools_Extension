@@ -12,6 +12,7 @@ from .toggle_unused_collections import mark_unused_collections, delete_unused_co
 from .toggle_light_temperature import update_light_temperature
 from .toggle_light_temperature import setup_light_temperature_for_selected_lights
 from .materials_tools import cleanup_duplicates_in_selected_objects
+from .arrange_utils import arrange_objects_logic
 
 # Оператор для створення набору 1
 class PAPL_OT_CreateSet1(bpy.types.Operator):
@@ -261,7 +262,20 @@ class PAPL_OT_CleanupMaterialDuplicates(bpy.types.Operator):
         self.report({'INFO'}, f"✅ Заміна завершена: {count} матеріал(ів) оновлено.")
         return {'FINISHED'}
 
+class PAPI_OT_ArrangeAssets(bpy.types.Operator):
+    """Розставляє виділені об'єкти в ряд"""
+    bl_idname = "papl.arrange_assets"
+    bl_label = "Arrange Assets"
+    bl_options = {'REGISTER', 'UNDO'}
 
+    def execute(self, context):
+        sort_method = context.scene.pm_sort_method
+        success, message = arrange_objects_logic(context.selected_objects, sort_method)
+        if success:
+            self.report({'INFO'}, message)
+        else:
+            self.report({'WARNING'}, message)
+        return {'FINISHED'}
         
 def register():
     bpy.utils.register_class(PAPL_OT_CreateSet1)
@@ -280,6 +294,7 @@ def register():
     bpy.utils.register_class(PAPL_OT_UpdateLightTemperature)
     bpy.utils.register_class(PAPL_OT_SetupLightTemperature)
     bpy.utils.register_class(PAPL_OT_CleanupMaterialDuplicates)
+    bpy.utils.register_class(PAPI_OT_ArrangeAssets)
 
 def unregister():
     bpy.utils.unregister_class(PAPL_OT_CreateSet1)
@@ -298,3 +313,4 @@ def unregister():
     bpy.utils.unregister_class(PAPL_OT_UpdateLightTemperature)
     bpy.utils.unregister_class(PAPL_OT_SetupLightTemperature)
     bpy.utils.unregister_class(PAPL_OT_CleanupMaterialDuplicates)
+    bpy.utils.unregister_class(PAPI_OT_ArrangeAssets)
