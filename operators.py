@@ -300,7 +300,6 @@ class ASSET_OT_ProcessMaterials(bpy.types.Operator):
             self.report({'WARNING'}, "Selected objects have no materials")
             return {'CANCELLED'}
             
-        # ОНОВЛЕНО: Створюємо два окремі словники для передачі в логіку
         opaque_maps_to_use = {
             'BASE_COLOR': props.use_opaque_base_color,
             'ROUGHNESS': props.use_opaque_roughness,
@@ -321,6 +320,17 @@ class ASSET_OT_ProcessMaterials(bpy.types.Operator):
              self.report({'ERROR'}, f"Finished with {errors} errors. Check console.")
         else:
              self.report({'INFO'}, f"Successfully processed {processed} materials.")
+        
+        # --- ДОДАНО: Очищення даних анімації ---
+        animation_cleared_count = 0
+        for obj in selected_objects:
+            if obj.animation_data:
+                obj.animation_data_clear()
+                animation_cleared_count += 1
+        
+        if animation_cleared_count > 0:
+            self.report({'INFO'}, f"Animation data cleared from {animation_cleared_count} objects.")
+
         return {'FINISHED'}
         
 def register():
