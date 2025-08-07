@@ -1,5 +1,34 @@
 import bpy
 
+class MaterialProcessorProperties(bpy.types.PropertyGroup):
+    texture_folder_path: bpy.props.StringProperty(
+        name="Texture Folder",
+        description="Path to the folder containing textures",
+        subtype='DIR_PATH',
+        default="//"
+    ) # type: ignore
+    transparent_keywords: bpy.props.StringProperty(
+        name="Transparent",
+        description="Keywords for transparent materials (e.g., leaf, flower)",
+        default="leaf"
+    ) # type: ignore
+    opaque_keywords: bpy.props.StringProperty(
+        name="Opaque",
+        description="Keywords for opaque materials (e.g., bark, trunk, branch)",
+        default="bark, trunk, branch"
+    ) # type: ignore
+
+    # Галочки для непрозорих матеріалів
+    use_opaque_base_color: bpy.props.BoolProperty(name="Base Color", default=True)
+    use_opaque_roughness: bpy.props.BoolProperty(name="Roughness", default=True)
+    use_opaque_normal: bpy.props.BoolProperty(name="Normal Map", default=True)
+    
+    # Галочки для прозорих матеріалів
+    use_transparent_base_color: bpy.props.BoolProperty(name="Base Color", default=True)
+    use_transparent_opacity: bpy.props.BoolProperty(name="Opacity", default=True)
+    use_transparent_normal: bpy.props.BoolProperty(name="Normal Map", default=False)
+    use_transparent_translucency: bpy.props.BoolProperty(name="Translucency", default=False)
+
 class PAPL_PT_MainPanel(bpy.types.Panel):
     """Основна панель PM TOOLS"""
     bl_label = "PM TOOLS"
@@ -33,6 +62,7 @@ class PAPL_PT_MainPanel(bpy.types.Panel):
         row.operator("papl.mesh_to_collection_instance", text="Mesh to IC")
         row.operator("papl.adjust_custom_distance", text="DeFuck Lights")
         box.operator("papl.toggle_modifiers", text="Toggle Modifiers", icon='MODIFIER')
+        box.operator("papl.cleanup_material_duplicates", text="Delete material duplicate", icon='MATERIAL')
 
         # ========== UNUSED COLLECTIONS ==========
         box = layout.box()
@@ -74,6 +104,43 @@ class PAPL_PT_MainPanel(bpy.types.Panel):
         box.prop(scene, "pm_sort_method", text="")
         box.operator("papl.arrange_assets", text="Arrange Selected")
 
+        # ========== Material Processor ==========
+        box = layout.box()
+        box.label(text="Material Processor", icon='MATERIAL')
+        
+        props = context.scene.material_processor_props
+        
+        box.prop(props, "texture_folder_path")
+        
+        # Поля для ключових слів
+        split = box.split(factor=0.5)
+        col1 = split.column()
+        col1.prop(props, "opaque_keywords")
+        col2 = split.column()
+        col2.prop(props, "transparent_keywords")
+
+        # Дві колонки для налаштувань текстур
+        split = box.split(factor=0.5)
+        
+        # Ліва колонка для непрозорих
+        col1 = split.column()
+        sub_box1 = col1.box()
+        sub_box1.label(text="Opaque Textures:")
+        sub_box1.prop(props, "use_opaque_base_color")
+        sub_box1.prop(props, "use_opaque_roughness")
+        sub_box1.prop(props, "use_opaque_normal")
+
+        # Права колонка для прозорих
+        col2 = split.column()
+        sub_box2 = col2.box()
+        sub_box2.label(text="Transparent Textures:")
+        sub_box2.prop(props, "use_transparent_base_color")
+        sub_box2.prop(props, "use_transparent_opacity")
+        sub_box2.prop(props, "use_transparent_normal")
+        sub_box2.prop(props, "use_transparent_translucency")
+        
+        box.operator("asset.process_materials", text="Process Materials", icon='TRIA_RIGHT_BAR')
+
 
 def register():
     bpy.utils.register_class(PAPL_PT_MainPanel)
@@ -93,8 +160,14 @@ def register():
         ],
         default='POLYCOUNT'
     )
+        # Реєструємо властивості для матеріального процесора
+    bpy.utils.register_class(MaterialProcessorProperties)
+    bpy.types.Scene.material_processor_props = bpy.props.PointerProperty(type=MaterialProcessorProperties)
 
 def unregister():
     bpy.utils.unregister_class(PAPL_PT_MainPanel)
     del bpy.types.Scene.papl_light_temperature
     del bpy.types.Scene.pm_sort_method
+    # Видаляємо властивості матеріального процесора
+    bpy.utils.unregister_class(MaterialProcessorProperties)
+    del bpy.types.Scene.material_processor_props

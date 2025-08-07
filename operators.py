@@ -13,6 +13,7 @@ from .toggle_light_temperature import update_light_temperature
 from .toggle_light_temperature import setup_light_temperature_for_selected_lights
 from .materials_tools import cleanup_duplicates_in_selected_objects
 from .arrange_utils import arrange_objects_logic
+from .maxtree_converter import process_materials
 
 # Оператор для створення набору 1
 class PAPL_OT_CreateSet1(bpy.types.Operator):
@@ -276,6 +277,51 @@ class PAPI_OT_ArrangeAssets(bpy.types.Operator):
         else:
             self.report({'WARNING'}, message)
         return {'FINISHED'}
+    
+class ASSET_OT_ProcessMaterials(bpy.types.Operator):
+    """Finds and connects textures for materials of selected objects"""
+    bl_idname = "asset.process_materials"
+    bl_label = "Process Materials"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        props = context.scene.material_processor_props
+        selected_objects = context.selected_objects
+        if not selected_objects:
+            self.report({'WARNING'}, "No objects selected")
+            return {'CANCELLED'}
+        materials_to_process = set()
+        for obj in selected_objects:
+            if obj.type == 'MESH':
+                for mat_slot in obj.material_slots:
+                    if mat_slot.material:
+                        materials_to_process.add(mat_slot.material)
+        if not materials_to_process:
+            self.report({'WARNING'}, "Selected objects have no materials")
+            return {'CANCELLED'}
+            
+        # ОНОВЛЕНО: Створюємо два окремі словники для передачі в логіку
+        opaque_maps_to_use = {
+            'BASE_COLOR': props.use_opaque_base_color,
+            'ROUGHNESS': props.use_opaque_roughness,
+            'NORMAL': props.use_opaque_normal,
+        }
+        transparent_maps_to_use = {
+            'BASE_COLOR': props.use_transparent_base_color,
+            'ALPHA': props.use_transparent_opacity,
+            'NORMAL': props.use_transparent_normal,
+            'TRANSLUCENCY': props.use_transparent_translucency,
+        }
+
+        processed, errors = process_materials(
+            context, list(materials_to_process), opaque_maps_to_use, transparent_maps_to_use
+        )
+
+        if errors > 0:
+             self.report({'ERROR'}, f"Finished with {errors} errors. Check console.")
+        else:
+             self.report({'INFO'}, f"Successfully processed {processed} materials.")
+        return {'FINISHED'}
         
 def register():
     bpy.utils.register_class(PAPL_OT_CreateSet1)
@@ -295,6 +341,7 @@ def register():
     bpy.utils.register_class(PAPL_OT_SetupLightTemperature)
     bpy.utils.register_class(PAPL_OT_CleanupMaterialDuplicates)
     bpy.utils.register_class(PAPI_OT_ArrangeAssets)
+    bpy.utils.register_class(ASSET_OT_ProcessMaterials)
 
 def unregister():
     bpy.utils.unregister_class(PAPL_OT_CreateSet1)
@@ -314,3 +361,4 @@ def unregister():
     bpy.utils.unregister_class(PAPL_OT_SetupLightTemperature)
     bpy.utils.unregister_class(PAPL_OT_CleanupMaterialDuplicates)
     bpy.utils.unregister_class(PAPI_OT_ArrangeAssets)
+    bpy.utils.unregister_class(ASSET_OT_ProcessMaterials)
