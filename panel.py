@@ -146,6 +146,12 @@ class PAPL_PT_MainPanel(bpy.types.Panel):
         box.label(text="Camera Tools", icon='CAMERA_DATA')
         row = box.row()
         row.operator("papl.convert_max_cameras", text="Max Empties to Cams", icon='FORWARD')
+        
+        # ========== MESH TOOLS ==========
+        box = layout.box()
+        box.label(text="Mesh Tools", icon='MESH_DATA')
+        row = box.row()
+        row.operator("mesh.link_by_vcount", text="Link Instances (Verts)", icon='LINKED')
 
 
 def register():

@@ -15,6 +15,7 @@ from .materials_tools import cleanup_duplicates_in_selected_objects
 from .arrange_utils import arrange_objects_logic
 from .maxtree_converter import process_materials
 from .camera_utils import convert_max_empties_to_cameras
+from .mesh_utils import link_instances_by_vertex_count
 
 # Оператор для створення набору 1
 class PAPL_OT_CreateSet1(bpy.types.Operator):
@@ -348,7 +349,22 @@ class PAPL_OT_ConvertMaxCameras(bpy.types.Operator):
             self.report({'WARNING'}, "Не знайдено підходящих пар Empty + Target")
         return {'FINISHED'}
 
+class MESH_OT_link_by_vcount(bpy.types.Operator):
+    bl_idname = "mesh.link_by_vcount"
+    bl_label = "Link Instances (by Verts)"
+    bl_description = "Зробити об'єкти інстансами, якщо у них однакова кількість вертексів"
+    bl_options = {'REGISTER', 'UNDO'}
 
+    def execute(self, context):
+        from .mesh_utils import link_instances_by_vertex_count
+        count = link_instances_by_vertex_count()
+        
+        if count == {"CANCELLED"}:
+            self.report({'WARNING'}, "Виділи хоча б два меші")
+            return {'CANCELLED'}
+            
+        self.report({'INFO'}, f"Лінковано {count} об'єктів")
+        return {'FINISHED'}
         
 def register():
     bpy.utils.register_class(PAPL_OT_CreateSet1)
@@ -370,6 +386,7 @@ def register():
     bpy.utils.register_class(PAPI_OT_ArrangeAssets)
     bpy.utils.register_class(ASSET_OT_ProcessMaterials)
     bpy.utils.register_class(PAPL_OT_ConvertMaxCameras)
+    bpy.utils.register_class(MESH_OT_link_by_vcount)
 
 
 def unregister():
@@ -392,3 +409,4 @@ def unregister():
     bpy.utils.unregister_class(PAPI_OT_ArrangeAssets)
     bpy.utils.unregister_class(ASSET_OT_ProcessMaterials)
     bpy.utils.unregister_class(PAPL_OT_ConvertMaxCameras)
+    bpy.utils.unregister_class(MESH_OT_link_by_vcount)

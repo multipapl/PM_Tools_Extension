@@ -1,5 +1,6 @@
 import bpy
 import math
+import re
 
 def convert_max_empties_to_cameras():
     selected_objects = bpy.context.selected_objects
@@ -22,18 +23,27 @@ def convert_max_empties_to_cameras():
         old_target = bpy.data.objects.get(target_name)
         
         if old_target:
-            # 1. Отримуємо чисті координати
             cam_pos = old_empty.matrix_world.to_translation()
             target_pos = old_target.matrix_world.to_translation()
 
-            # 2. Створюємо чистий таргет (просто щоб не залежати від імпорту)
             new_target = bpy.data.objects.new(f"P_Target_{old_empty.name}", None)
             new_target.empty_display_type = 'PLAIN_AXES'
             new_target.location = target_pos
             cam_collection.objects.link(new_target)
 
-            # 3. Створюємо камеру
             cam_data = bpy.data.cameras.new(name=old_empty.name)
+            
+            # --- НОВЕ: Витягування Focal Length з назви ---
+            # Шукаємо цифри в форматі _20mm
+            focal_match = re.search(r'_(\d+)mm', old_empty.name)
+            if focal_match:
+                try:
+                    focal_val = float(focal_match.group(1))
+                    cam_data.lens = focal_val
+                except ValueError:
+                    pass 
+            # ----------------------------------------------
+
             cam_data.show_passepartout = True
             cam_data.passepartout_alpha = 1.0
             
@@ -41,14 +51,11 @@ def convert_max_empties_to_cameras():
             cam_obj.location = cam_pos
             cam_collection.objects.link(cam_obj)
 
-            # --- КОНСТРЕЙН 1: Стеження (Track To) ---
             tt = cam_obj.constraints.new(type='TRACK_TO')
             tt.target = new_target
             tt.track_axis = 'TRACK_NEGATIVE_Z'
             tt.up_axis = 'UP_Y'
 
-            # --- КОНСТРЕЙН 2: Вирівнювання (Limit Rotation) ---
-            # Цей констрейн "перекриває" нахил від Track To
             lr = cam_obj.constraints.new(type='LIMIT_ROTATION')
             lr.name = "P_ARCH_Vertical_Fix"
             lr.use_limit_x = True
@@ -58,7 +65,7 @@ def convert_max_empties_to_cameras():
             lr.min_y = 0
             lr.max_y = 0
             lr.owner_space = 'WORLD'
-            lr.influence = 1.0 # За замовчуванням камера ідеально рівна
+            lr.influence = 1.0 
             
             if created_count == 0:
                 bpy.context.scene.camera = cam_obj
