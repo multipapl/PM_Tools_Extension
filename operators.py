@@ -14,6 +14,7 @@ from .toggle_light_temperature import setup_light_temperature_for_selected_light
 from .materials_tools import cleanup_duplicates_in_selected_objects
 from .arrange_utils import arrange_objects_logic
 from .maxtree_converter import process_materials
+from .camera_utils import convert_max_empties_to_cameras
 
 # Оператор для створення набору 1
 class PAPL_OT_CreateSet1(bpy.types.Operator):
@@ -332,6 +333,22 @@ class ASSET_OT_ProcessMaterials(bpy.types.Operator):
             self.report({'INFO'}, f"Animation data cleared from {animation_cleared_count} objects.")
 
         return {'FINISHED'}
+
+class PAPL_OT_ConvertMaxCameras(bpy.types.Operator):
+    """Конвертує пари Empty + Empty.Target з 3ds Max у камери Blender"""
+    bl_idname = "papl.convert_max_cameras"
+    bl_label = "Convert Max Cameras"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        count = convert_max_empties_to_cameras()
+        if count > 0:
+            self.report({'INFO'}, f"Успішно створено {count} камер")
+        else:
+            self.report({'WARNING'}, "Не знайдено підходящих пар Empty + Target")
+        return {'FINISHED'}
+
+
         
 def register():
     bpy.utils.register_class(PAPL_OT_CreateSet1)
@@ -352,6 +369,8 @@ def register():
     bpy.utils.register_class(PAPL_OT_CleanupMaterialDuplicates)
     bpy.utils.register_class(PAPI_OT_ArrangeAssets)
     bpy.utils.register_class(ASSET_OT_ProcessMaterials)
+    bpy.utils.register_class(PAPL_OT_ConvertMaxCameras)
+
 
 def unregister():
     bpy.utils.unregister_class(PAPL_OT_CreateSet1)
@@ -372,3 +391,4 @@ def unregister():
     bpy.utils.unregister_class(PAPL_OT_CleanupMaterialDuplicates)
     bpy.utils.unregister_class(PAPI_OT_ArrangeAssets)
     bpy.utils.unregister_class(ASSET_OT_ProcessMaterials)
+    bpy.utils.unregister_class(PAPL_OT_ConvertMaxCameras)
