@@ -141,6 +141,12 @@ class PAPL_PT_MainPanel(bpy.types.Panel):
         
         box.operator("asset.process_materials", text="Process Materials", icon='TRIA_RIGHT_BAR')
 
+        # ========== CAMERA TOOLS ==========
+        box = layout.box()
+        box.label(text="Camera Tools", icon='CAMERA_DATA')
+        row = box.row()
+        row.operator("papl.convert_max_cameras", text="Max Empties to Cams", icon='FORWARD')
+
 
 def register():
     bpy.utils.register_class(PAPL_PT_MainPanel)
